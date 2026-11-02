@@ -8,7 +8,8 @@ An ffmpeg workflow for editing vertical short-form video (Instagram Reels, TikTo
 input/    source clips (not committed)
 output/   renders (not committed)
 scripts/reel   the editing toolkit (one bash script, wraps ffmpeg)
-remotion/      Remotion (React) project: TikTok-style animated word-by-word captions
+video/         HyperFrames project (HTML to video): captions, titles, motion graphics
+.claude/skills HyperFrames agent skills for Claude Code
 ```
 
 Media files are git-ignored. Keep footage local or in Google Drive.
@@ -42,24 +43,28 @@ Output is 1080x1920, 30fps, H.264 High (CRF 18), yuv420p, AAC 192k, with faststa
 
 Captions and titles are placed to stay clear of the platform UI at the top and bottom of the screen.
 
-## Remotion (animated captions)
+## HyperFrames (animated captions, titles, motion graphics)
 
-`remotion/` was scaffolded with `npx create-video --tiktok`. It transcribes a clip locally with Whisper.cpp
-and renders bold, word-highlighted captions at 1080x1920.
+`video/` is a [HyperFrames](https://hyperframes.heygen.com) project (Apache 2.0), set up at 1080x1920.
+A video is an HTML page: clips, text and audio carry `data-start` and `data-duration` timing, and GSAP animates them.
+HyperFrames renders the page frame by frame in headless Chrome and encodes it with ffmpeg.
+
+The HyperFrames agent skills are committed in `.claude/skills/` (`hyperframes`, `hyperframes-cli`,
+`hyperframes-registry` and `media-use`), so Claude Code sessions in this repo know how to use it. Refresh them with
+`npx hyperframes skills update`, then copy them from `~/.claude/skills/` back into `.claude/skills/`.
 
 ```bash
-cd remotion
-npm i                                    # first time, after a fresh clone
-cp ../output/02-vert.mp4 public/clip.mp4 # put your video in public/
-node sub.mjs public/clip.mp4             # writes public/clip.json (first run downloads Whisper + model)
-npm run dev                              # preview and tweak in Remotion Studio
-npx remotion render CaptionedVideo out/clip.mp4 --props='{"src":"/public/clip.mp4"}'
+cd video
+npm run check                                   # lint, layout, motion, contrast
+npx hyperframes snapshot --at 1,3,5             # PNG frames to review
+npm run render                                  # MP4 written to video/renders/
+npx hyperframes transcribe assets/clip.mp4 --model small.en   # word-level transcript for captions
+npx hyperframes catalog --tag caption-style     # ready-made caption styles
+npx hyperframes remove-background assets/clip.mp4             # cutout, for text-behind-speaker
 ```
 
-The Whisper model is set in `remotion/whisper-config.mjs` (default `medium.en`, about 1.5 GB; `small.en` is faster).
-Use a model without `.en` for other languages. Caption styling lives in `remotion/src/CaptionedVideo/`.
+Source footage goes in `video/assets/`; media files are git-ignored.
+`npx hyperframes tts` needs `pip install kokoro-onnx soundfile`.
 
-You can combine both tools: cut and reframe with `scripts/reel`, caption in Remotion, then add music and
-loudness with `scripts/reel music` and `scripts/reel loudnorm`.
-
-Remotion is free for individuals and teams of up to 3; larger companies need a license (remotion.pro/license).
+A typical reel: cut and reframe with `scripts/reel` (`trim`, then `vertical crop`), compose captions, titles and
+music in `video/`, then run `npm run render`.

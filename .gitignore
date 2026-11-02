@@ -13,5 +13,10 @@ output/*
 *.m4a
 .DS_Store
 
-# Remotion: keep the small template sample so a fresh clone renders out of the box
-!remotion/public/sample-video.mp4
+# HyperFrames: renders and local working state
+video/renders/
+video/.hyperframes/
+video/node_modules/
+
+# Keep the sound effects bundled with the HyperFrames skills
+!.claude/skills/**/*.mp3
