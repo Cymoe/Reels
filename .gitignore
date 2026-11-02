@@ -12,3 +12,6 @@ output/*
 *.mp3
 *.m4a
 .DS_Store
+
+# Remotion: keep the small template sample so a fresh clone renders out of the box
+!remotion/public/sample-video.mp4
