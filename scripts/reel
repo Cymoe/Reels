@@ -1,0 +1,146 @@
+#!/usr/bin/env bash
+# reel — small ffmpeg toolkit for making vertical (9:16) short-form videos.
+# Run `scripts/reel help` for usage.
+set -euo pipefail
+
+W=${REEL_WIDTH:-1080}
+H=${REEL_HEIGHT:-1920}
+FPS=${REEL_FPS:-30}
+CRF=${REEL_CRF:-18}
+PRESET=${REEL_PRESET:-medium}
+FONT=${REEL_FONT:-Inter}
+
+# Shared output encoding: H.264 High / yuv420p / AAC, faststart — what IG/TikTok/Shorts expect.
+VENC=(-c:v libx264 -preset "$PRESET" -crf "$CRF" -pix_fmt yuv420p -profile:v high -movflags +faststart)
+AENC=(-c:a aac -b:a 192k -ar 48000)
+
+die() { echo "error: $*" >&2; exit 1; }
+need() { [[ -f "$1" ]] || die "file not found: $1"; }
+run() { echo "+ ffmpeg $*" >&2; ffmpeg -hide_banner -loglevel warning -stats -y "$@"; }
+has_audio() { [[ -n "$(ffprobe -v error -select_streams a -show_entries stream=index -of csv=p=0 "$1")" ]]; }
+
+usage() {
+  cat <<USAGE
+Usage: scripts/reel <command> [args]
+
+  info     IN                         Show duration, resolution, fps, codecs
+  trim     IN OUT START END           Cut a segment (times: 12.5, 00:01:03.2). Re-encodes for frame accuracy
+  vertical IN OUT [crop|blur|fit] [X] Convert to ${W}x${H}
+                                        crop: fill frame, center crop (X = 0..1 horizontal focus, default 0.5)
+                                        blur: whole frame on blurred background (default)
+                                        fit:  whole frame on black bars
+  speed    IN OUT FACTOR              Change speed (2 = twice as fast, 0.5 = half speed)
+  concat   OUT IN1 IN2 [...]          Join clips (all are normalized to ${W}x${H}@${FPS})
+  captions IN OUT SUBS.srt            Burn in subtitles (big bold, lower-middle — reel style)
+  text     IN OUT "TEXT" [START END]  Overlay a title near the top (optionally only between START/END secs)
+  music    IN OUT MUSIC [VOL] [DUCK]  Add music at VOL (default 0.25); keeps original audio unless DUCK=mute
+  loudnorm IN OUT                     Normalize audio to -14 LUFS (streaming loudness)
+  export   IN OUT                     Final pass: ${W}x${H}, ${FPS}fps, H.264/AAC, faststart
+  thumb    IN OUT.jpg [TIME]          Grab a frame as an image (default 1s)
+
+Env overrides: REEL_WIDTH REEL_HEIGHT REEL_FPS REEL_CRF REEL_PRESET REEL_FONT
+USAGE
+}
+
+cmd=${1:-help}; shift || true
+case "$cmd" in
+  info)
+    need "$1"
+    ffprobe -v error -show_entries format=duration,size,bit_rate:stream=codec_type,codec_name,width,height,r_frame_rate,sample_rate,channels \
+      -of default=noprint_wrappers=1 "$1"
+    ;;
+  trim)
+    [[ $# -eq 4 ]] || die "usage: trim IN OUT START END"
+    need "$1"
+    run -ss "$3" -to "$4" -i "$1" "${VENC[@]}" "${AENC[@]}" "$2"
+    ;;
+  vertical)
+    [[ $# -ge 2 ]] || die "usage: vertical IN OUT [crop|blur|fit] [X]"
+    need "$1"; mode=${3:-blur}; x=${4:-0.5}
+    case "$mode" in
+      crop) vf="scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H}:(iw-${W})*${x}:(ih-${H})/2,setsar=1" ;;
+      fit)  vf="scale=${W}:${H}:force_original_aspect_ratio=decrease,pad=${W}:${H}:(ow-iw)/2:(oh-ih)/2:black,setsar=1" ;;
+      blur) vf="split[a][b];[a]scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},boxblur=30:5,eq=brightness=-0.08[bg];[b]scale=${W}:${H}:force_original_aspect_ratio=decrease[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2,setsar=1" ;;
+      *) die "mode must be crop, blur or fit" ;;
+    esac
+    run -i "$1" -filter_complex "[0:v]${vf}[v]" -map "[v]" -map 0:a? "${VENC[@]}" "${AENC[@]}" "$2"
+    ;;
+  speed)
+    [[ $# -eq 3 ]] || die "usage: speed IN OUT FACTOR"
+    need "$1"; f=$3
+    if has_audio "$1"; then
+      # atempo accepts 0.5–100; chain for slower than 0.5
+      at=$(python3 -c "
+f=$f; p=[]
+while f<0.5: p.append('atempo=0.5'); f/=0.5
+p.append(f'atempo={f}'); print(','.join(p))")
+      run -i "$1" -filter_complex "[0:v]setpts=PTS/${f}[v];[0:a]${at}[a]" -map "[v]" -map "[a]" "${VENC[@]}" "${AENC[@]}" "$2"
+    else
+      run -i "$1" -vf "setpts=PTS/${f}" "${VENC[@]}" "$2"
+    fi
+    ;;
+  concat)
+    [[ $# -ge 3 ]] || die "usage: concat OUT IN1 IN2 [...]"
+    out=$1; shift
+    inputs=(); filt=""; i=0
+    for f in "$@"; do
+      need "$f"; inputs+=(-i "$f")
+      filt+="[$i:v]scale=${W}:${H}:force_original_aspect_ratio=decrease,pad=${W}:${H}:(ow-iw)/2:(oh-ih)/2,setsar=1,fps=${FPS},format=yuv420p[v$i];"
+      if has_audio "$f"; then
+        filt+="[$i:a]aformat=sample_rates=48000:channel_layouts=stereo[a$i];"
+      else
+        d=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$f")
+        filt+="anullsrc=r=48000:cl=stereo,atrim=0:${d}[a$i];"
+      fi
+      i=$((i+1))
+    done
+    for ((j=0;j<i;j++)); do filt+="[v$j][a$j]"; done
+    filt+="concat=n=${i}:v=1:a=1[v][a]"
+    run "${inputs[@]}" -filter_complex "$filt" -map "[v]" -map "[a]" "${VENC[@]}" "${AENC[@]}" "$out"
+    ;;
+  captions)
+    [[ $# -eq 3 ]] || die "usage: captions IN OUT SUBS.srt"
+    need "$1"; need "$3"
+    style="FontName=${FONT},Bold=1,FontSize=16,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,BorderStyle=1,Outline=3,Shadow=0,Alignment=2,MarginV=70"
+    subs=$(printf '%s' "$3" | sed "s/[\\:']/\\\\&/g")
+    run -i "$1" -vf "subtitles='${subs}':force_style='${style}'" "${VENC[@]}" -c:a copy "$2"
+    ;;
+  text)
+    [[ $# -ge 3 ]] || die "usage: text IN OUT \"TEXT\" [START END]"
+    need "$1"
+    tf=$(mktemp); printf '%s' "$3" > "$tf"
+    en=""; [[ $# -ge 5 ]] && en=":enable='between(t,$4,$5)'"
+    run -i "$1" -vf "drawtext=fontfile='$(fc-match -f '%{file}' "${FONT}:style=Bold")':textfile='${tf}':fontsize=h/22:fontcolor=white:borderw=6:bordercolor=black:x=(w-text_w)/2:y=h*0.12${en}" \
+      "${VENC[@]}" -c:a copy "$2"
+    rm -f "$tf"
+    ;;
+  music)
+    [[ $# -ge 3 ]] || die "usage: music IN OUT MUSIC [VOL] [mute]"
+    need "$1"; need "$3"; vol=${4:-0.25}; mode=${5:-mix}
+    if [[ "$mode" == "mute" ]] || ! has_audio "$1"; then
+      af="[1:a]volume=${vol}[a]"
+    else
+      af="[1:a]volume=${vol}[m];[0:a][m]amix=inputs=2:duration=first:normalize=0[a]"
+    fi
+    # -stream_loop loops music if it is shorter than the video; -shortest ends at the video's end
+    run -i "$1" -stream_loop -1 -i "$3" -filter_complex "$af" -map 0:v -map "[a]" -c:v copy "${AENC[@]}" -shortest "$2"
+    ;;
+  loudnorm)
+    [[ $# -eq 2 ]] || die "usage: loudnorm IN OUT"
+    need "$1"
+    run -i "$1" -af "loudnorm=I=-14:TP=-1.5:LRA=11" -c:v copy "${AENC[@]}" "$2"
+    ;;
+  export)
+    [[ $# -eq 2 ]] || die "usage: export IN OUT"
+    need "$1"
+    run -i "$1" -vf "scale=${W}:${H}:force_original_aspect_ratio=decrease,pad=${W}:${H}:(ow-iw)/2:(oh-ih)/2,setsar=1,fps=${FPS}" \
+      "${VENC[@]}" "${AENC[@]}" "$2"
+    ;;
+  thumb)
+    [[ $# -ge 2 ]] || die "usage: thumb IN OUT.jpg [TIME]"
+    need "$1"
+    run -ss "${3:-1}" -i "$1" -frames:v 1 -q:v 2 "$2"
+    ;;
+  help|-h|--help) usage ;;
+  *) usage; exit 1 ;;
+esac
