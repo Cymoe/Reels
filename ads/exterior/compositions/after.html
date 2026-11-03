@@ -1,36 +1,32 @@
 <template>
   <style>
     #root { position: absolute; inset: 0; font-family: "Montserrat", sans-serif; }
-    /* Meta ad safe zone: text between y=270 and y=1248, 65px from the sides */
-    #after-stack {
-      position: absolute; left: 72px; top: 284px; width: 820px;
-      display: flex; flex-direction: column; align-items: flex-start; gap: 18px;
-    }
-    #after-kicker {
-      font-weight: 800; font-size: 34px; letter-spacing: 0.08em; text-transform: uppercase;
-      color: #fff; background: var(--chili, #e8431f); padding: 12px 22px; border-radius: 10px;
+    /* One headline block, centred inside the Meta Reels ad safe zone (y 270-1248, 65px sides) */
+    #after-block {
+      position: absolute; left: 70px; right: 70px; top: 300px;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
     }
     .after-line {
-      font-weight: 900; font-size: 82px; line-height: 1.02; letter-spacing: -0.02em;
-      color: #fff; background: var(--panel, #17110f); padding: 10px 26px 16px; border-radius: 16px;
+      font-weight: 900; font-size: 82px; line-height: 1.08; letter-spacing: -0.025em;
+      color: #fff; text-shadow: 0 4px 28px rgba(0, 0, 0, 0.55);
     }
-    #after-l2 { color: var(--hot, #ff8a5c); }
+    .after-line .hl {
+      display: inline-block; margin-top: 10px; padding: 2px 22px 10px; border-radius: 12px;
+      color: #fff; background: var(--chili, #e8431f); text-shadow: none;
+    }
   </style>
   <div id="root" data-composition-id="after" data-width="1080" data-height="1920">
-    <div id="after-stack" class="clip" data-start="0" data-duration="3.3">
-      <div id="after-kicker">The after</div>
-      <div id="after-l1" class="after-line">Same door.</div>
-      <div id="after-l2" class="after-line">Brand new look.</div>
+    <div id="after-block" class="clip" data-start="0" data-duration="3.3">
+      <div id="after-l1" class="after-line">Make them</div>
+      <div id="after-l2" class="after-line"><span class="hl">look twice.</span></div>
     </div>
   </div>
   <script>
     const v = window.__hyperframes.getVariables();
-    
     const tl = gsap.timeline({ paused: true });
     const D = 3.3;
-    const parts = ["#after-kicker", "#after-l1", "#after-l2"];
-    tl.fromTo(parts, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out", stagger: 0.1 }, 0);
-    tl.to(parts, { opacity: 0, y: -24, duration: 0.28, ease: "power2.in", stagger: 0.04 }, D - 0.4);
+    tl.fromTo(["#after-l1", "#after-l2"], { opacity: 0, y: 36 }, { opacity: 1, y: 0, duration: 0.38, ease: "power3.out", stagger: 0.09 }, 0);
+    tl.to(["#after-l1", "#after-l2"], { opacity: 0, y: -20, duration: 0.25, ease: "power2.in", stagger: 0.03 }, D - 0.36);
     window.__timelines["after"] = tl;
   </script>
 </template>
