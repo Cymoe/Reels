@@ -1,0 +1,36 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; font-family: "Montserrat", sans-serif; }
+    /* Meta ad safe zone: text between y=270 and y=1248, 65px from the sides */
+    #prep-stack {
+      position: absolute; left: 72px; top: 300px; width: 820px;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 18px;
+    }
+    #prep-kicker {
+      font-weight: 800; font-size: 34px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: #fff; background: var(--chili, #e8431f); padding: 12px 22px; border-radius: 10px;
+    }
+    .prep-line {
+      font-weight: 900; font-size: 96px; line-height: 1.02; letter-spacing: -0.02em;
+      color: #fff; background: var(--panel, #17110f); padding: 10px 26px 16px; border-radius: 16px;
+    }
+    #prep-l2 { color: var(--hot, #ff8a5c); }
+  </style>
+  <div id="root" data-composition-id="prep" data-width="1080" data-height="1920">
+    <div id="prep-stack" class="clip" data-start="0" data-duration="3.2">
+      <div id="prep-kicker">The prep matters</div>
+      <div id="prep-l1" class="prep-line">Every surface</div>
+      <div id="prep-l2" class="prep-line">masked &amp; protected</div>
+    </div>
+  </div>
+  <script>
+    const v = window.__hyperframes.getVariables();
+    
+    const tl = gsap.timeline({ paused: true });
+    const D = 3.2;
+    const parts = ["#prep-kicker", "#prep-l1", "#prep-l2"];
+    tl.fromTo(parts, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out", stagger: 0.1 }, 0);
+    tl.to(parts, { opacity: 0, y: -24, duration: 0.28, ease: "power2.in", stagger: 0.04 }, D - 0.4);
+    window.__timelines["prep"] = tl;
+  </script>
+</template>

@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" data-resolution="portrait" data-composition-variables="[
-    {&quot;id&quot;:&quot;tape&quot;,&quot;type&quot;:&quot;color&quot;,&quot;label&quot;:&quot;Accent (tape blue)&quot;,&quot;default&quot;:&quot;#2b7fe0&quot;},
-    {&quot;id&quot;:&quot;navy&quot;,&quot;type&quot;:&quot;color&quot;,&quot;label&quot;:&quot;Navy&quot;,&quot;default&quot;:&quot;#0f1f4d&quot;}
+    {&quot;id&quot;:&quot;chili&quot;,&quot;type&quot;:&quot;color&quot;,&quot;label&quot;:&quot;Brand red&quot;,&quot;default&quot;:&quot;#e8431f&quot;},
+    {&quot;id&quot;:&quot;panel&quot;,&quot;type&quot;:&quot;color&quot;,&quot;label&quot;:&quot;Text panel&quot;,&quot;default&quot;:&quot;#17110f&quot;},
+    {&quot;id&quot;:&quot;hot&quot;,&quot;type&quot;:&quot;color&quot;,&quot;label&quot;:&quot;Accent text&quot;,&quot;default&quot;:&quot;#ff8a5c&quot;},
+    {&quot;id&quot;:&quot;footage&quot;,&quot;type&quot;:&quot;string&quot;,&quot;label&quot;:&quot;Footage&quot;,&quot;default&quot;:&quot;assets/walkthrough.mp4&quot;}
   ]">
   <head>
     <meta charset="UTF-8">
@@ -9,8 +11,9 @@
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
     <style>
       :root {
-        --tape: #2b7fe0;
-        --navy: #0f1f4d;
+        --chili: #e8431f;
+        --panel: #17110f;
+        --hot: #ff8a5c;
       }
       * {
         margin: 0;
@@ -61,9 +64,10 @@
 
       <div data-hf-id="hf-5b52" id="scrim" class="clip" data-start="0" data-duration="14.8" data-track-index="1"></div>
 
-      <div data-hf-id="hf-anbm" id="hook" class="scene" data-composition-id="hook" data-composition-src="compositions/hook.html" data-start="0" data-duration="4.4" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
-      <div data-hf-id="hf-w5sc" id="masked" class="scene" data-composition-id="masked" data-composition-src="compositions/masked.html" data-start="4.8" data-duration="4.6" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
-      <div data-hf-id="hf-w3z3" id="cta" class="scene" data-composition-id="cta" data-composition-src="compositions/cta.html" data-start="9.8" data-duration="5" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="hook" class="scene" data-composition-id="hook" data-composition-src="compositions/hook.html" data-start="0" data-duration="3.4" data-track-index="2" data-track-kind="graphics" data-variable-values="{&quot;brand&quot;:&quot;Picante Painting&quot;}" data-width="1080" data-height="1920"></div>
+      <div id="paint" class="scene" data-composition-id="paint" data-composition-src="compositions/paint.html" data-start="3.6" data-duration="3.6" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="prep" class="scene" data-composition-id="prep" data-composition-src="compositions/prep.html" data-start="7.4" data-duration="3.2" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="endcard" class="scene" data-composition-id="endcard" data-composition-src="compositions/endcard.html" data-start="10.8" data-duration="4" data-track-index="2" data-track-kind="graphics" data-variable-values="{&quot;brand&quot;:&quot;Picante Painting&quot;}" data-width="1080" data-height="1920"></div>
     </div>
     <script>
       const tl = gsap.timeline({ paused: true });
