@@ -8,7 +8,7 @@ An ffmpeg workflow for editing vertical short-form video (Instagram Reels, TikTo
 input/    source clips (not committed)
 output/   renders (not committed)
 scripts/reel   the editing toolkit (one bash script, wraps ffmpeg)
-video/         HyperFrames project (HTML to video): captions, titles, motion graphics
+ads/           one HyperFrames project per ad (Picante Painting Meta ads)
 .claude/skills HyperFrames agent skills for Claude Code
 ```
 
@@ -45,7 +45,9 @@ Captions and titles are placed to stay clear of the platform UI at the top and b
 
 ## HyperFrames (animated captions, titles, motion graphics)
 
-`video/` is a [HyperFrames](https://hyperframes.heygen.com) project (Apache 2.0), set up at 1080x1920.
+Each folder in `ads/` is a [HyperFrames](https://hyperframes.heygen.com) project (Apache 2.0) at 1080x1920:
+`ads/cabinets/` (cabinet walkthrough) and `ads/door/` (door spraying). The brand name and end-card tagline are
+variables (`data-variable-values` on the `hook` and `endcard` hosts in each `index.html`).
 A video is an HTML page: clips, text and audio carry `data-start` and `data-duration` timing, and GSAP animates them.
 HyperFrames renders the page frame by frame in headless Chrome and encodes it with ffmpeg.
 
@@ -54,7 +56,7 @@ The HyperFrames agent skills are committed in `.claude/skills/` (`hyperframes`, 
 `npx hyperframes skills update`, then copy them from `~/.claude/skills/` back into `.claude/skills/`.
 
 ```bash
-cd video
+cd ads/door   # or any ad folder
 npm run check                                   # lint, layout, motion, contrast
 npx hyperframes snapshot --at 1,3,5             # PNG frames to review
 npm run render                                  # MP4 written to video/renders/
@@ -63,8 +65,8 @@ npx hyperframes catalog --tag caption-style     # ready-made caption styles
 npx hyperframes remove-background assets/clip.mp4             # cutout, for text-behind-speaker
 ```
 
-Source footage goes in `video/assets/`; media files are git-ignored.
+Source footage goes in `ads/<name>/assets/`; media files are git-ignored.
 `npx hyperframes tts` needs `pip install kokoro-onnx soundfile`.
 
 A typical reel: cut and reframe with `scripts/reel` (`trim`, then `vertical crop`), compose captions, titles and
-music in `video/`, then run `npm run render`.
+music in an `ads/<name>/` project, then run `npm run render`.

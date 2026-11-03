@@ -14,9 +14,9 @@ output/*
 .DS_Store
 
 # HyperFrames: renders and local working state
-video/renders/
-video/.hyperframes/
-video/node_modules/
+ads/*/renders/
+ads/*/.hyperframes/
+ads/*/node_modules/
 
 # Keep the sound effects bundled with the HyperFrames skills
 !.claude/skills/**/*.mp3

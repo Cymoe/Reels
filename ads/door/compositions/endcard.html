@@ -24,12 +24,12 @@
     }
   </style>
   <div id="root" data-composition-id="endcard" data-width="1080" data-height="1920">
-    <div id="end-dim" class="clip" data-start="0" data-duration="4"></div>
-    <div id="end-card" class="clip" data-start="0" data-duration="4">
+    <div id="end-dim" class="clip" data-start="0" data-duration="3.6"></div>
+    <div id="end-card" class="clip" data-start="0" data-duration="3.6">
       <div id="end-bar"></div>
       <div id="end-brand">Picante</div>
       <div id="end-sub">Painting</div>
-      <div id="end-line">Cabinets that look brand new.</div>
+      <div id="end-line">Smooth spray finishes.</div>
       <div id="end-cta">Tap below for a quote</div>
     </div>
   </div>
@@ -39,6 +39,7 @@
     const i = b.lastIndexOf(" ");
     document.getElementById("end-brand").textContent = i > 0 ? b.slice(0, i) : b;
     document.getElementById("end-sub").textContent = i > 0 ? b.slice(i + 1) : "";
+    if (v.tagline) document.getElementById("end-line").textContent = v.tagline;
     const tl = gsap.timeline({ paused: true });
     tl.fromTo("#end-dim", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power2.out" }, 0);
     tl.fromTo("#end-card", { opacity: 0, y: 60, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.6)" }, 0.1);
