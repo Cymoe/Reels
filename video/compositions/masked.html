@@ -1,0 +1,57 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Montserrat", sans-serif;
+    }
+    #masked-stack {
+      position: absolute;
+      left: 72px;
+      top: 300px;
+      width: 820px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 18px;
+    }
+    #masked-kicker {
+      font-weight: 800;
+      font-size: 34px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fff;
+      background: var(--tape, #2b7fe0);
+      padding: 12px 22px;
+      border-radius: 10px;
+    }
+    .masked-line {
+      font-weight: 900;
+      font-size: 96px;
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      color: #fff;
+      background: var(--navy, #0f1f4d);
+      padding: 10px 26px 16px;
+      border-radius: 16px;
+    }
+    #masked-l2 {
+      color: #8cc2ff;
+    }
+  </style>
+  <div id="root" data-composition-id="masked" data-width="1080" data-height="1920">
+    <div id="masked-stack" class="clip" data-start="0" data-duration="4.6">
+      <div id="masked-kicker" data-var-text="masked-kicker">Step 1: prep</div>
+      <div id="masked-l1" class="masked-line" data-var-text="masked-line1">Every surface</div>
+      <div id="masked-l2" class="masked-line" data-var-text="masked-line2">masked & protected</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const D = 4.6;
+    const parts = ["#masked-kicker", "#masked-l1", "#masked-l2"];
+    tl.fromTo(parts, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out", stagger: 0.12 }, 0);
+    tl.to(parts, { opacity: 0, y: -24, duration: 0.3, ease: "power2.in", stagger: 0.04 }, D - 0.42);
+    window.__timelines["masked"] = tl;
+  </script>
+</template>

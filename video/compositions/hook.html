@@ -1,0 +1,57 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Montserrat", sans-serif;
+    }
+    #hook-stack {
+      position: absolute;
+      left: 72px;
+      top: 300px;
+      width: 820px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 18px;
+    }
+    #hook-kicker {
+      font-weight: 800;
+      font-size: 34px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fff;
+      background: var(--tape, #2b7fe0);
+      padding: 12px 22px;
+      border-radius: 10px;
+    }
+    .hook-line {
+      font-weight: 900;
+      font-size: 96px;
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      color: #fff;
+      background: var(--navy, #0f1f4d);
+      padding: 10px 26px 16px;
+      border-radius: 16px;
+    }
+    #hook-l2 {
+      color: #8cc2ff;
+    }
+  </style>
+  <div id="root" data-composition-id="hook" data-width="1080" data-height="1920">
+    <div id="hook-stack" class="clip" data-start="0" data-duration="4.4">
+      <div id="hook-kicker" data-var-text="hook-kicker">Kitchen cabinet makeover</div>
+      <div id="hook-l1" class="hook-line" data-var-text="hook-line1">We have</div>
+      <div id="hook-l2" class="hook-line" data-var-text="hook-line2">blue cabinets</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const D = 4.4;
+    const parts = ["#hook-kicker", "#hook-l1", "#hook-l2"];
+    tl.fromTo(parts, { opacity: 1, scale: 1.12, transformOrigin: "0% 50%" }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(2)", stagger: 0.06 }, 0);
+    tl.to(parts, { opacity: 0, y: -24, duration: 0.3, ease: "power2.in", stagger: 0.04 }, D - 0.42);
+    window.__timelines["hook"] = tl;
+  </script>
+</template>

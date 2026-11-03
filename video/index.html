@@ -1,15 +1,16 @@
-<!doctype html>
-<html lang="en" data-resolution="portrait">
+<!DOCTYPE html>
+<html lang="en" data-resolution="portrait" data-composition-variables="[
+    {&quot;id&quot;:&quot;tape&quot;,&quot;type&quot;:&quot;color&quot;,&quot;label&quot;:&quot;Accent (tape blue)&quot;,&quot;default&quot;:&quot;#2b7fe0&quot;},
+    {&quot;id&quot;:&quot;navy&quot;,&quot;type&quot;:&quot;color&quot;,&quot;label&quot;:&quot;Navy&quot;,&quot;default&quot;:&quot;#0f1f4d&quot;}
+  ]">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1080, height=1920" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, height=1920">
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
     <style>
-      /* Placeholders: replace all three with the film's own palette and display face. */
       :root {
-        --ground: #000;
-        --ink: #ffffff;
-        --font-display: sans-serif;
+        --tape: #2b7fe0;
+        --navy: #0f1f4d;
       }
       * {
         margin: 0;
@@ -18,42 +19,54 @@
       }
       html,
       body {
-        margin: 0;
         width: 1080px;
         height: 1920px;
         overflow: hidden;
-        background: var(--ground);
+        background: #000;
       }
       #root {
+        position: relative;
         width: 100%;
         height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: var(--font-display);
       }
-      #title {
-        color: var(--ink);
-        font-size: 72px;
-        font-weight: 600;
-        letter-spacing: -0.03em;
+      #footage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 1;
+      }
+      /* Decoration under the platform UI band: hides the old caption seam, helps IG's own caption read */
+      #scrim {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        background: linear-gradient(
+          to bottom,
+          rgba(8, 14, 36, 0) 0%,
+          rgba(8, 14, 36, 0) 56%,
+          rgba(8, 14, 36, 0.86) 70%,
+          rgba(8, 14, 36, 0.94) 100%
+        );
+      }
+      .scene {
+        z-index: 3;
       }
     </style>
   </head>
   <body>
-    <div
-      id="root"
-      data-composition-id="main"
-      data-start="0"
-      data-duration="10"
-      data-width="1080"
-      data-height="1920"
-    >
-      <h1 id="title" class="clip" data-start="0" data-duration="10" data-track-index="0">Title</h1>
+    <div data-hf-id="hf-xac9" id="root" data-composition-id="main" data-start="0" data-duration="14.8" data-width="1080" data-height="1920">
+      <video data-color-grading="{&quot;preset&quot;:null,&quot;intensity&quot;:1,&quot;adjust&quot;:{&quot;exposure&quot;:0.06,&quot;contrast&quot;:0.1,&quot;highlights&quot;:0,&quot;shadows&quot;:0.06,&quot;whites&quot;:0,&quot;blacks&quot;:0,&quot;temperature&quot;:0.04,&quot;tint&quot;:0,&quot;vibrance&quot;:0.04,&quot;saturation&quot;:-0.06},&quot;details&quot;:{&quot;vignette&quot;:0,&quot;vignetteMidpoint&quot;:0.5,&quot;vignetteRoundness&quot;:0,&quot;vignetteFeather&quot;:0.65,&quot;grain&quot;:0,&quot;grainSize&quot;:0.25,&quot;grainRoughness&quot;:0.5},&quot;effects&quot;:{&quot;blur&quot;:0,&quot;pixelate&quot;:0,&quot;chromaBleed&quot;:0,&quot;tapeDamage&quot;:0,&quot;tapeTracking&quot;:0,&quot;tapeNoise&quot;:1,&quot;tapeSpeed&quot;:0.5,&quot;filmArtifacts&quot;:0,&quot;halftone&quot;:0,&quot;halftoneSize&quot;:0,&quot;twoInkPrint&quot;:0,&quot;twoInkPrintSize&quot;:0,&quot;ascii&quot;:0,&quot;asciiSize&quot;:0.06578947368421052,&quot;asciiInvert&quot;:0,&quot;asciiStyle&quot;:0,&quot;asciiColor&quot;:1,&quot;asciiRotation&quot;:0,&quot;dither&quot;:0,&quot;ditherSize&quot;:0,&quot;bloom&quot;:0,&quot;bloomRadius&quot;:8,&quot;monoScreen&quot;:0,&quot;monoScreenSize&quot;:0,&quot;monoScreenAngle&quot;:0,&quot;monoScreenSpread&quot;:0,&quot;monoScreenShape&quot;:0,&quot;monoScreenInvert&quot;:0,&quot;scanlines&quot;:0,&quot;scanlineCount&quot;:0,&quot;scanlineSoftness&quot;:0,&quot;chromaticAberration&quot;:0,&quot;chromaticAngle&quot;:0,&quot;crtCurvature&quot;:0,&quot;digitalGlitch&quot;:0,&quot;digitalGlitchColorSplit&quot;:0,&quot;digitalGlitchLineTear&quot;:0,&quot;digitalGlitchPixelate&quot;:0,&quot;digitalGlitchBlockAmount&quot;:0,&quot;digitalGlitchBlockDisplacement&quot;:0,&quot;digitalGlitchBlockOpacity&quot;:0,&quot;digitalGlitchSpeed&quot;:0,&quot;engraving&quot;:0,&quot;engravingSpacing&quot;:0.4117647058823529,&quot;engravingMinThickness&quot;:0.2,&quot;engravingMaxThickness&quot;:0.4571428571428572,&quot;engravingAngle&quot;:0.25,&quot;engravingContrast&quot;:0.4666666666666667,&quot;engravingSharpness&quot;:0.59,&quot;engravingWave&quot;:0.2,&quot;engravingWaveFrequency&quot;:0.2222222222222222,&quot;crosshatch&quot;:0,&quot;crosshatchSpacing&quot;:0.28,&quot;crosshatchThickness&quot;:0.25,&quot;crosshatchAngle&quot;:0.25,&quot;crosshatchContrast&quot;:0.3333333333333333,&quot;crosshatchEdges&quot;:0.5,&quot;crosshatchLineWeight&quot;:0,&quot;crosshatchWave&quot;:0.33,&quot;crosshatchWaveFrequency&quot;:0.2222222222222222,&quot;kuwahara&quot;:0,&quot;kuwaharaRadius&quot;:0.14285714285714285,&quot;kuwaharaSharpness&quot;:0.3125,&quot;kuwaharaSaturation&quot;:0.5},&quot;lut&quot;:null,&quot;colorSpace&quot;:&quot;rec709&quot;}" data-hf-id="hf-ep4u" id="footage" class="clip" src="assets/walkthrough.mp4" data-start="0" data-duration="14.8" data-track-index="0" data-var-src="footage" muted playsinline></video>
+
+      <div data-hf-id="hf-5b52" id="scrim" class="clip" data-start="0" data-duration="14.8" data-track-index="1"></div>
+
+      <div data-hf-id="hf-anbm" id="hook" class="scene" data-composition-id="hook" data-composition-src="compositions/hook.html" data-start="0" data-duration="4.4" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div data-hf-id="hf-w5sc" id="masked" class="scene" data-composition-id="masked" data-composition-src="compositions/masked.html" data-start="4.8" data-duration="4.6" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div data-hf-id="hf-w3z3" id="cta" class="scene" data-composition-id="cta" data-composition-src="compositions/cta.html" data-start="9.8" data-duration="5" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
     </div>
     <script>
       const tl = gsap.timeline({ paused: true });
-      // Example: tl.fromTo("#title", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.18, ease: "power4.out" }, 0);
       window.__timelines["main"] = tl;
       tl.seek(0);
     </script>
