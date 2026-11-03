@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" data-resolution="portrait" data-composition-variables="[
+    {&quot;id&quot;:&quot;chili&quot;,&quot;type&quot;:&quot;color&quot;,&quot;label&quot;:&quot;Brand red&quot;,&quot;default&quot;:&quot;#e8431f&quot;},
+    {&quot;id&quot;:&quot;panel&quot;,&quot;type&quot;:&quot;color&quot;,&quot;label&quot;:&quot;Text panel&quot;,&quot;default&quot;:&quot;#17110f&quot;},
+    {&quot;id&quot;:&quot;hot&quot;,&quot;type&quot;:&quot;color&quot;,&quot;label&quot;:&quot;Accent text&quot;,&quot;default&quot;:&quot;#ff8a5c&quot;},
+    {&quot;id&quot;:&quot;footage&quot;,&quot;type&quot;:&quot;string&quot;,&quot;label&quot;:&quot;Footage&quot;,&quot;default&quot;:&quot;assets/door-repaint.mp4&quot;}
+  ]">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, height=1920">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --chili: #e8431f;
+        --panel: #17110f;
+        --hot: #ff8a5c;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+      #ground {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background: var(--panel);
+      }
+      /* Clean square of the source (its burned-in title and phone number are cropped away), below the text */
+      #footage {
+        position: absolute;
+        left: 48px;
+        top: 640px;
+        width: 984px;
+        height: 984px;
+        object-fit: cover;
+        border-radius: 28px;
+        z-index: 1;
+      }
+      /* Decoration under the platform UI band: hides the old caption seam, helps IG's own caption read */
+      .scene {
+        z-index: 3;
+      }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-xac9" id="root" data-composition-id="main" data-start="0" data-duration="12.8" data-width="1080" data-height="1920">
+       <video data-hf-id="hf-ep4u" id="footage" class="clip" src="assets/door-repaint.mp4" data-start="0" data-duration="12.8" data-track-index="0" data-var-src="footage" muted playsinline></video>
+
+      <div id="ground" class="clip" data-start="0" data-duration="12.8" data-track-index="1"></div>
+
+      <div id="hook" class="scene" data-composition-id="hook" data-composition-src="compositions/hook.html" data-start="0" data-duration="2.5" data-track-index="2" data-track-kind="graphics" data-variable-values="{&quot;brand&quot;:&quot;Picante Painting&quot;}" data-width="1080" data-height="1920"></div>
+      <div id="revive" class="scene" data-composition-id="revive" data-composition-src="compositions/revive.html" data-start="2.6" data-duration="3.0" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="after" class="scene" data-composition-id="after" data-composition-src="compositions/after.html" data-start="5.7" data-duration="3.3" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
+      <div id="endcard" class="scene" data-composition-id="endcard" data-composition-src="compositions/endcard.html" data-start="9.1" data-duration="3.7" data-track-index="2" data-track-kind="graphics" data-variable-values="{&quot;brand&quot;:&quot;Picante Painting&quot;,&quot;tagline&quot;:&quot;Exterior &amp; interior painting.&quot;,&quot;phone&quot;:&quot;432-250-1127&quot;}" data-width="1080" data-height="1920"></div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

@@ -46,7 +46,8 @@ Captions and titles are placed to stay clear of the platform UI at the top and b
 ## HyperFrames (animated captions, titles, motion graphics)
 
 Each folder in `ads/` is a [HyperFrames](https://hyperframes.heygen.com) project (Apache 2.0) at 1080x1920:
-`ads/cabinets/` (cabinet walkthrough) and `ads/door/` (door spraying). The brand name and end-card tagline are
+`ads/cabinets/` (cabinet walkthrough), `ads/door/` (door spraying) and `ads/exterior/` (roll-up door
+repaint, framed layout because the source had burned-in text). The brand name and end-card tagline are
 variables (`data-variable-values` on the `hook` and `endcard` hosts in each `index.html`).
 A video is an HTML page: clips, text and audio carry `data-start` and `data-duration` timing, and GSAP animates them.
 HyperFrames renders the page frame by frame in headless Chrome and encodes it with ffmpeg.

@@ -1,0 +1,36 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; font-family: "Montserrat", sans-serif; }
+    /* Meta ad safe zone: text between y=270 and y=1248, 65px from the sides */
+    #revive-stack {
+      position: absolute; left: 72px; top: 284px; width: 820px;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 18px;
+    }
+    #revive-kicker {
+      font-weight: 800; font-size: 34px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: #fff; background: var(--chili, #e8431f); padding: 12px 22px; border-radius: 10px;
+    }
+    .revive-line {
+      font-weight: 900; font-size: 82px; line-height: 1.02; letter-spacing: -0.02em;
+      color: #fff; background: var(--panel, #17110f); padding: 10px 26px 16px; border-radius: 16px;
+    }
+    #revive-l2 { color: var(--hot, #ff8a5c); }
+  </style>
+  <div id="root" data-composition-id="revive" data-width="1080" data-height="1920">
+    <div id="revive-stack" class="clip" data-start="0" data-duration="3.0">
+      <div id="revive-kicker">Exterior &amp; interior</div>
+      <div id="revive-l1" class="revive-line">Watch it come</div>
+      <div id="revive-l2" class="revive-line">back to life.</div>
+    </div>
+  </div>
+  <script>
+    const v = window.__hyperframes.getVariables();
+    
+    const tl = gsap.timeline({ paused: true });
+    const D = 3.0;
+    const parts = ["#revive-kicker", "#revive-l1", "#revive-l2"];
+    tl.fromTo(parts, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out", stagger: 0.1 }, 0); tl.fromTo("#revive-l1", { scale: 1 }, { scale: 1.06, duration: 0.2, yoyo: true, repeat: 1, ease: "sine.inOut", transformOrigin: "0% 50%" }, 0.5);
+    tl.to(parts, { opacity: 0, y: -24, duration: 0.28, ease: "power2.in", stagger: 0.04 }, D - 0.4);
+    window.__timelines["revive"] = tl;
+  </script>
+</template>

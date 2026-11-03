@@ -1,0 +1,53 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; font-family: "Montserrat", sans-serif; }
+    #end-dim { position: absolute; inset: 0; background: rgba(14, 9, 8, 0.15); }
+    /* Centred inside the Meta safe zone (y 270-1248) */
+    #end-card {
+      position: absolute; left: 90px; top: 290px; width: 900px;
+      padding: 64px 48px 56px; border-radius: 28px;
+      background: var(--panel, #17110f);
+      display: flex; flex-direction: column; align-items: center; text-align: center; gap: 22px;
+    }
+    #end-bar { width: 120px; height: 10px; border-radius: 5px; background: var(--chili, #e8431f); }
+    #end-brand {
+      font-weight: 900; font-size: 118px; line-height: 0.95; letter-spacing: -0.02em;
+      color: var(--chili, #e8431f); text-transform: uppercase;
+    }
+    #end-sub {
+      font-weight: 700; font-size: 40px; letter-spacing: 0.32em; color: #fff; text-transform: uppercase;
+    }
+    #end-line { font-weight: 700; font-size: 46px; color: #fff; margin-top: 18px; }
+    #end-phone { font-weight: 700; font-size: 38px; color: rgba(255, 255, 255, 0.85); letter-spacing: 0.02em; }
+    #end-cta {
+      font-weight: 900; font-size: 50px; color: #fff; background: var(--chili, #e8431f);
+      padding: 22px 44px; border-radius: 999px; margin-top: 6px;
+    }
+  </style>
+  <div id="root" data-composition-id="endcard" data-width="1080" data-height="1920">
+    <div id="end-dim" class="clip" data-start="0" data-duration="3.7"></div>
+    <div id="end-card" class="clip" data-start="0" data-duration="3.7">
+      <div id="end-bar"></div>
+      <div id="end-brand">Picante</div>
+      <div id="end-sub">Painting</div>
+      <div id="end-line">Exterior &amp; interior painting.</div>
+      <div id="end-cta">Tap below for a quote</div>
+      <div id="end-phone"></div>
+    </div>
+  </div>
+  <script>
+    const v = window.__hyperframes.getVariables();
+    const b = (v.brand || "Picante Painting").trim();
+    const i = b.lastIndexOf(" ");
+    document.getElementById("end-brand").textContent = i > 0 ? b.slice(0, i) : b;
+    document.getElementById("end-sub").textContent = i > 0 ? b.slice(i + 1) : "";
+    if (v.tagline) document.getElementById("end-line").textContent = v.tagline;
+    document.getElementById("end-phone").textContent = v.phone ? "or call " + v.phone : "";
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#end-dim", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power2.out" }, 0);
+    tl.fromTo("#end-card", { opacity: 0, y: 60, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.6)" }, 0.1);
+    tl.fromTo(["#end-bar", "#end-brand", "#end-sub", "#end-line", "#end-cta", "#end-phone"], { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out", stagger: 0.08 }, 0.25);
+    tl.fromTo("#end-cta", { scale: 1 }, { scale: 1.06, duration: 0.3, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.4);
+    window.__timelines["endcard"] = tl;
+  </script>
+</template>
