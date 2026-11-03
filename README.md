@@ -59,7 +59,7 @@ The HyperFrames agent skills are committed in `.claude/skills/` (`hyperframes`, 
 cd ads/door   # or any ad folder
 npm run check                                   # lint, layout, motion, contrast
 npx hyperframes snapshot --at 1,3,5             # PNG frames to review
-npm run render                                  # MP4 written to video/renders/
+npm run render                                  # MP4 written to renders/ inside the ad folder
 npx hyperframes transcribe assets/clip.mp4 --model small.en   # word-level transcript for captions
 npx hyperframes catalog --tag caption-style     # ready-made caption styles
 npx hyperframes remove-background assets/clip.mp4             # cutout, for text-behind-speaker
